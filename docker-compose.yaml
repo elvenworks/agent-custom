@@ -3,7 +3,7 @@ services:
   1p-custom-agent:
     container_name: 1p-custom-agent
     restart: always
-    image: elvenworks/1p-agent:$DOCKER_IMAGE_VERSION
+    image: elvenworks/1p-agent:latest
     logging:
       driver: "json-file"
     environment:
