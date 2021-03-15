@@ -47,7 +47,6 @@ EOF
                 mv 1p-agent.service /etc/systemd/system
                 systemctl enable 1p-agent
                 curl -sLO https://1p-installers.s3.amazonaws.com/agent/bin/linux/latest/1p-agent
-                chmod +x 1p-agent
                 mv 1p-agent /usr/bin/
                 
                 setenforce 0 ; 
