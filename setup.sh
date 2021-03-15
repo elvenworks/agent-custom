@@ -64,7 +64,7 @@ EOF
                 echo "Create Update Script"
                 curl -sI https://1p-installers.s3.amazonaws.com/agent/bin/linux/latest/1p-agent  |grep x-amz-meta-version >> /root/agent-custom/agent-version-installed
                 chmod +x /root/agent-custom/scripts/update.sh
-                crontab /root/agent-custom/scripts/crontab-source
+                crontab "/root/agent-custom/scripts/crontab-source"
                 
                 echo "Agent installed"
                 sleep $TIME
