@@ -49,6 +49,9 @@ EOF
                 curl -sLO https://1p-installers.s3.amazonaws.com/agent/bin/linux/latest/1p-agent
                 chmod +x 1p-agent
                 mv 1p-agent /usr/bin/
+                
+                setenforce 0 ; 
+                sed -i 's/^SELINUX=.*/SELINUX=disabled/g' /etc/sysconfig/selinux 
 
                 echo "Setup Logz"
                 curl -sLO https://github.com/logzio/logzio-shipper/raw/master/dist/logzio-rsyslog.tar.gz
@@ -60,6 +63,7 @@ EOF
 
                 echo "Create Update Script"
                 curl -sI https://1p-installers.s3.amazonaws.com/agent/bin/linux/latest/1p-agent  |grep x-amz-meta-version >> /root/agent-custom/agent-version-installed
+                chmod +x /root/agent-custom/scripts/update.sh
                 crontab /root/agent-custom/scripts/crontab-source
                 
                 echo "Agent installed"
@@ -79,6 +83,8 @@ EOF
 
                 echo "Start Agent 1P"
                 service 1p-agent start
+                sleep $TIME
+                exit 0
                 ;;
         0)
                 echo Exit...
