@@ -62,7 +62,7 @@ EOF
                 service 1p-agent start
 
                 echo "Create Update Script"
-                curl -sI https://1p-installers.s3.amazonaws.com/agent/bin/linux/latest/1p-agent  |grep x-amz-meta-version >> /root/agent-custom/agent-version-installed
+                curl -sI https://1p-installers.s3.amazonaws.com/agent/bin/linux/latest/1p-agent  |grep x-amz-meta-version > /root/agent-custom/agent-version-installed
                 crontab "/root/agent-custom/scripts/crontab-source"
                 
                 echo "Agent installed"
