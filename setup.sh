@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+OS_NAME=$(cat /etc/os-release | awk -F '=' '/^NAME/{print $2}' | awk '{print $1}' | tr -d '"')
 TIME=1
 clear
 while true;do
@@ -24,6 +25,18 @@ case $option in
                  LOGZIO_TOKEN=$1
                  ENVIRONMENT_ID=$2
                 fi
+                echo "Check OS"
+                sleep $TIME
+                if [ "$OS_NAME" == "CentOS" ] ; then
+                 USER_OS="centos"
+                 echo "Is $OS_NAME"
+                elif [ "$OS_NAME" == "Amazon" ]; then
+                 USER_OS="ec2-user"
+                 echo "Is $OS_NAME"
+                else
+                 echo "OS Not Supported"
+                 exit 1
+                fi
                 echo "Installing Agent 1P"
                 cat <<EOF > 1p-agent.service
                 [Unit]
@@ -36,7 +49,7 @@ case $option in
                 Restart=on-failure
                 RestartSec=5s
   
-                User=ec2-user
+                User=$USER_OS
                 ExecStart=/usr/bin/1p-agent
                 Environment=PORT=8080
                 Environment=$ENVIRONMENT_ID
