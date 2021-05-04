@@ -28,15 +28,14 @@ case $option in
                 echo "Check OS"
                 sleep $TIME
                 if [ "$OS_NAME" == "CentOS" ] ; then
-                 USER_OS="centos"
                  echo "Is $OS_NAME"
                 elif [ "$OS_NAME" == "Amazon" ]; then
-                 USER_OS="ec2-user"
                  echo "Is $OS_NAME"
                 else
                  echo "OS Not Supported"
                  exit 1
                 fi
+                adduser 1p-agent
                 echo "Installing Agent 1P"
                 cat <<EOF > 1p-agent.service
                 [Unit]
@@ -49,7 +48,7 @@ case $option in
                 Restart=on-failure
                 RestartSec=5s
   
-                User=$USER_OS
+                User=1p-agent
                 ExecStart=/usr/bin/1p-agent
                 Environment=PORT=8080
                 Environment=$ENVIRONMENT_ID
