@@ -2,28 +2,16 @@
 OS_NAME=$(cat /etc/os-release | awk -F '=' '/^NAME/{print $2}' | awk '{print $1}' | tr -d '"')
 TIME=1
 clear
-while true;do
-echo " "
-echo "Welcome, Choose An Option!
-      1 - Install Agent 1P
-      2 - Force Agent 1P Update
-      0 - Exit Install"
-echo " "
-echo -n "The option chosen: "
-read option
-case $option in
+
+case 1 in
         1)
                 echo "Check Variables"
                 sleep $TIME
-                if [ -z "$1" ] || [ -z "$2" ] ; then
-                 echo "Please ENVIRONMENT_ID And LOGZIO_TOKEN"
+                if [ -z "$1" ]; then
+                 echo "Please ENVIRONMENT_ID"
                  exit 1
-                elif [[ $1 == *'ENVIRONMENT_ID='* ]]; then
-                 ENVIRONMENT_ID=$1
-                 LOGZIO_TOKEN=$2
                 else
-                 LOGZIO_TOKEN=$1
-                 ENVIRONMENT_ID=$2
+                 ENVIRONMENT_ID=$1
                 fi
                 echo "Check OS"
                 sleep $TIME
@@ -65,13 +53,22 @@ EOF
                 setenforce 0 ; 
                 sed -i 's/^SELINUX=.*/SELINUX=disabled/g' /etc/sysconfig/selinux 
 
-                echo "Setup Logz"
-                curl -sLO https://github.com/logzio/logzio-shipper/raw/master/dist/logzio-rsyslog.tar.gz
-                tar xzf logzio-rsyslog.tar.gz
-                yes | sudo rsyslog/install.sh -t linux -a $LOGZIO_TOKEN -l "listener.logz.io"
+                setcap cap_net_raw,cap_net_admin=eip /usr/bin/1p-agent
                 
                 echo "Start Agent 1P"
                 service 1p-agent start
+
+                echo "Check Telnet installed"
+                if ls /usr/bin/telent ; then
+                    yum remove telnet -y 
+                fi
+
+                echo "Setup Logz"
+                curl -sLO https://github.com/logzio/logzio-shipper/raw/master/dist/logzio-rsyslog.tar.gz
+                tar xzf logzio-rsyslog.tar.gz
+                source /tmp/logzio_env_token
+                yes | sudo rsyslog/install.sh -t linux -a $LOGZIO_TOKEN -l "listener.logz.io"
+                rm -vrf /tmp/logzio_env_token
 
                 echo "Create Update Script"
                 curl -sI https://1p-installers.s3.amazonaws.com/agent/bin/linux/latest/1p-agent  |grep x-amz-meta-version > /root/agent-custom/agent-version-installed
@@ -80,26 +77,6 @@ EOF
                 echo "Agent installed"
                 sleep $TIME
                 
-                exit 0
-                ;;
-        2)
-                echo "Stop Agent 1P"
-                service 1p-agent stop
-
-                echo "Force Agent 1P Update"
-                rm -r  /usr/bin/1p-agent
-                curl -sLO https://1p-installers.s3.amazonaws.com/agent/bin/linux/latest/1p-agent
-                chmod +x 1p-agent
-                mv 1p-agent /usr/bin/
-
-                echo "Start Agent 1P"
-                service 1p-agent start
-                sleep $TIME
-                exit 0
-                ;;
-        0)
-                echo Exit...
-                sleep $TIME
                 exit 0
                 ;;
 esac

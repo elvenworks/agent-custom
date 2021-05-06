@@ -17,7 +17,7 @@ Operational System
 - `yum install git -y` 
 - `git clone https://github.com/elvenworks/agent-custom.git` this repository
 - `cd agent-custom`
-- `bash setup.sh ENVIRONMENT_ID=my-env-id LOGZIO_TOKEN=1p-logzio-tokne` option 1
+- `bash setup.sh ENVIRONMENT_ID=my-env-id`
 
 
 ## Check Setup
