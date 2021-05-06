@@ -54,12 +54,12 @@ EOF
                 sed -i 's/^SELINUX=.*/SELINUX=disabled/g' /etc/sysconfig/selinux 
 
                 setcap cap_net_raw,cap_net_admin=eip /usr/bin/1p-agent
-                
+
                 echo "Start Agent 1P"
                 service 1p-agent start
 
                 echo "Check Telnet installed"
-                if ls /usr/bin/telent ; then
+                if ls /usr/bin/telnet ; then
                     yum remove telnet -y 
                 fi
 
