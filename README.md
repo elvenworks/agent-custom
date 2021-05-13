@@ -6,7 +6,7 @@ You will need the following things properly configured.
 
 - [1P Account](https://1p.elven.works/products)
 - [Cloud Custom](https://1p.elven.works/clouds/new)
-- [Git](http://git-scm.com/) v2+
+- [Git](http://git-scm.com/)
 
 Operational System
 
