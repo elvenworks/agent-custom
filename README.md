@@ -10,7 +10,7 @@ You will need the following things properly configured.
 
 Operational System
 
-- Amazon Linux 2, CentOS 7 And Ubuntu
+- Amazon Linux 2 Or CentOS 7 
 ## Installation
 
 - `sudo su -`
@@ -19,6 +19,16 @@ Operational System
 - `cd agent-custom`
 - `bash setup.sh ENVIRONMENT_ID=my-env-id`
 
+
+- Ubuntu
+
+## Installation
+
+- `sudo su -`
+- `apt-get install git -y` 
+- `git clone https://github.com/elvenworks/agent-custom.git` this repository
+- `cd agent-custom`
+- `bash setup.sh ENVIRONMENT_ID=my-env-id`
 
 ## Check Setup
 
