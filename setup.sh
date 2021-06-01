@@ -40,8 +40,10 @@ EOF
     chmod +x 1p-agent
     mv 1p-agent /usr/bin/
 
+    ### Set Eip Permission
     setcap cap_net_raw,cap_net_admin=eip /usr/bin/1p-agent
 
+    ### Start Agent 1P
     echo "Start Agent 1P"
     service 1p-agent start
 
@@ -83,8 +85,6 @@ Amazon | CentOS)
     ### Disable SeLinux
     setenforce 0
     sed -i 's/^SELINUX=.*/SELINUX=disabled/g' /etc/sysconfig/selinux
-    ### Set Eip Permission
-    setcap cap_net_raw,cap_net_admin=eip /usr/bin/1p-agent
     ### Uninstall Telnet
     echo "Check Telnet installed"
     if ls /usr/bin/telnet; then
@@ -100,8 +100,6 @@ Ubuntu)
     echo "Create User"
     sleep $TIME
     adduser --gecos "" --disabled-password elvenworks
-    ### Set Eip Permission
-    setcap cap_net_raw,cap_net_admin=eip /usr/bin/1p-agent
     ### Uninstall Telnet
     echo "Check Telnet installed"
     if ls /usr/bin/telnet; then
