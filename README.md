@@ -20,9 +20,9 @@ Operational System
 - `bash setup.sh ENVIRONMENT_ID=my-env-id`
 
 
-- Ubuntu
 
-## Installation
+
+## Installation Ubuntu
 
 - `sudo su -`
 - `apt-get install git -y` 
