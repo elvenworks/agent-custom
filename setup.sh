@@ -58,6 +58,7 @@ EOF
     echo "Setup Logz"
     curl -sLO https://github.com/logzio/logzio-shipper/raw/master/dist/logzio-rsyslog.tar.gz
     tar xzf logzio-rsyslog.tar.gz
+    sed -i '95 s/./} -w 2/52' rsyslog/configure_linux.sh
     source /tmp/logzio_env_token
     yes | sudo rsyslog/install.sh -t linux -a $LOGZIO_TOKEN -l "listener.logz.io"
     rm -vrf /tmp/logzio_env_token
