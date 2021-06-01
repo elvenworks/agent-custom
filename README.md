@@ -10,7 +10,7 @@ You will need the following things properly configured.
 
 Operational System
 
-- Amazon Linux 2 or CentOS 7
+- Amazon Linux 2, CentOS 7 And Ubuntu
 ## Installation
 
 - `sudo su -`
