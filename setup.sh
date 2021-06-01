@@ -3,20 +3,19 @@ OS_NAME=$(cat /etc/os-release | awk -F '=' '/^NAME/{print $2}' | awk '{print $1}
 TIME=1
 clear
 
-
 echo "Check Variables"
 sleep $TIME
 if [ -z "$1" ]; then
- echo "Please ENVIRONMENT_ID"
- exit 1
+    echo "Please ENVIRONMENT_ID"
+    exit 1
 else
- ENVIRONMENT_ID=$1
+    ENVIRONMENT_ID=$1
 fi
 
 commonInstallation() {
     ### Create Systemd Agent
     echo "Installing Agent 1P"
-    cat <<EOF > 1p-agent.service
+    cat <<EOF >1p-agent.service
     [Unit]
     Description=1p-agent is a component of Elven Works One Platform.
     After=network.target
@@ -40,7 +39,7 @@ EOF
     curl -sLO https://1p-installers.s3.amazonaws.com/agent/bin/linux/latest/1p-agent
     chmod +x 1p-agent
     mv 1p-agent /usr/bin/
-    
+
     setcap cap_net_raw,cap_net_admin=eip /usr/bin/1p-agent
 
     echo "Start Agent 1P"
@@ -48,10 +47,10 @@ EOF
 
     ### check success to start the agent
     if [ $? -eq 0 ]; then
-    echo "Agent 1P running"
+        echo "Agent 1P running"
     else
-    echo "Error On Start Agent 1P"
-    exit 1
+        echo "Error On Start Agent 1P"
+        exit 1
     fi
 
     ### Set Logs
@@ -65,52 +64,53 @@ EOF
 
     ### Set Version Agent And Script Update
     echo "Create Update Script"
-    curl -sI https://1p-installers.s3.amazonaws.com/agent/bin/linux/latest/1p-agent  |grep x-amz-meta-version > ${PWD}/agent-version-installed
+    curl -sI https://1p-installers.s3.amazonaws.com/agent/bin/linux/latest/1p-agent | grep x-amz-meta-version >${PWD}/agent-version-installed
     crontab "${PWD}/scripts/crontab-source"
 
     ### End installation
     echo "Agent installed"
     sleep $TIME
+    exit 0
 
 }
 
 case $OS_NAME in
-        Amazon|CentOS)
-                ### Create User 1p-agent
-                echo "Create User"
-                sleep $TIME
-                adduser 1p-agent
-                ### Disable SeLinux
-                setenforce 0 ; 
-                sed -i 's/^SELINUX=.*/SELINUX=disabled/g' /etc/sysconfig/selinux 
-                ### Set Eip Permission
-                setcap cap_net_raw,cap_net_admin=eip /usr/bin/1p-agent
-                ### Uninstall Telnet
-                echo "Check Telnet installed"
-                if ls /usr/bin/telnet ; then
-                    yum remove telnet -y 
-                fi
-                ### Set User
-                USER=1p-agent
-                ### Call Common Function
-                commonInstallation
-                ;;
-        Ubuntu)
-                ### Create User elvenworks
-                echo "Create User"
-                sleep $TIME
-                adduser --gecos "" --disabled-password elvenworks
-                ### Set Eip Permission
-                setcap cap_net_raw,cap_net_admin=eip /usr/bin/1p-agent
-                ### Uninstall Telnet
-                echo "Check Telnet installed"
-                if ls /usr/bin/telnet ; then
-                    apt-get remove telnet -y 
-                fi
-                ### Set User
-                USER=elvenworks
-                ### Call Common Function
-                commonInstallation
-                ;;
+Amazon | CentOS)
+    ### Create User 1p-agent
+    echo "Create User"
+    sleep $TIME
+    adduser 1p-agent
+    ### Disable SeLinux
+    setenforce 0
+    sed -i 's/^SELINUX=.*/SELINUX=disabled/g' /etc/sysconfig/selinux
+    ### Set Eip Permission
+    setcap cap_net_raw,cap_net_admin=eip /usr/bin/1p-agent
+    ### Uninstall Telnet
+    echo "Check Telnet installed"
+    if ls /usr/bin/telnet; then
+        yum remove telnet -y
+    fi
+    ### Set User
+    USER=1p-agent
+    ### Call Common Function
+    commonInstallation
+    ;;
+Ubuntu)
+    ### Create User elvenworks
+    echo "Create User"
+    sleep $TIME
+    adduser --gecos "" --disabled-password elvenworks
+    ### Set Eip Permission
+    setcap cap_net_raw,cap_net_admin=eip /usr/bin/1p-agent
+    ### Uninstall Telnet
+    echo "Check Telnet installed"
+    if ls /usr/bin/telnet; then
+        apt-get remove telnet -y
+    fi
+    ### Set User
+    USER=elvenworks
+    ### Call Common Function
+    commonInstallation
+    ;;
 esac
-done
+# done
