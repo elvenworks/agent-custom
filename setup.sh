@@ -12,6 +12,13 @@ else
     ENVIRONMENT_ID=$1
 fi
 
+if [ -z "$1" ]; then
+    echo "Please ORG_UID"
+    exit 1
+else
+    ORG_UID=$1
+fi
+
 commonInstallation() {
     ### Create Systemd Agent
     echo "Installing Agent 1P"
@@ -25,12 +32,13 @@ commonInstallation() {
     [Service]
     Restart=on-failure
     RestartSec=5s
-  
+
     User=$USER
     ExecStart=/usr/bin/1p-agent
     Environment=PORT=8080
     Environment=$ENVIRONMENT_ID
-                
+    Environment=$ORG_UID
+
     [Install]
     WantedBy=multi-user.target
 EOF
