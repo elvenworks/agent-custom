@@ -5,18 +5,15 @@ clear
 
 echo "Check Variables"
 sleep $TIME
-if [ -z "$1" ]; then
-    echo "Please ENVIRONMENT_ID"
-    exit 1
+if [ -z "$1" ] || [ -z "$2" ] ; then
+ echo "Please ENVIRONMENT_ID And ORG_UID"
+ exit 1
+elif [[ $1 == *'ENVIRONMENT_ID='* ]]; then
+ ENVIRONMENT_ID=$1
+ ORG_UID=$2
 else
-    ENVIRONMENT_ID=$1
-fi
-
-if [ -z "$1" ]; then
-    echo "Please ORG_UID"
-    exit 1
-else
-    ORG_UID=$1
+ ORG_UID=$1
+ ENVIRONMENT_ID=$2
 fi
 
 commonInstallation() {
