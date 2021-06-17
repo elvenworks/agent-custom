@@ -10,30 +10,56 @@ if [ -z "$1" ]; then
     exit 1
 else
     ENVIRONMENT_ID=$1
+    ORG_UID=$2
 fi
 
 commonInstallation() {
     ### Create Systemd Agent
     echo "Installing Agent 1P"
-    cat <<EOF >1p-agent.service
-    [Unit]
-    Description=1p-agent is a component of Elven Works One Platform.
-    After=network.target
-    StartLimitIntervalSec=500
-    StartLimitBurst=5
 
-    [Service]
-    Restart=on-failure
-    RestartSec=5s
-  
-    User=$USER
-    ExecStart=/usr/bin/1p-agent
-    Environment=PORT=8080
-    Environment=$ENVIRONMENT_ID
-                
-    [Install]
-    WantedBy=multi-user.target
+    if [ -z "$ORG_UID" ]; then
+      cat <<EOF >1p-agent.service
+      [Unit]
+      Description=1p-agent is a component of Elven Works One Platform.
+      After=network.target
+      StartLimitIntervalSec=500
+      StartLimitBurst=5
+
+      [Service]
+      Restart=on-failure
+      RestartSec=5s
+
+      User=$USER
+      ExecStart=/usr/bin/1p-agent
+      Environment=PORT=8080
+      Environment=$ENVIRONMENT_ID
+
+      [Install]
+      WantedBy=multi-user.target
 EOF
+    else
+      cat <<EOF >1p-agent.service
+      [Unit]
+      Description=1p-agent is a component of Elven Works One Platform.
+      After=network.target
+      StartLimitIntervalSec=500
+      StartLimitBurst=5
+
+      [Service]
+      Restart=on-failure
+      RestartSec=5s
+
+      User=$USER
+      ExecStart=/usr/bin/1p-agent
+      Environment=PORT=8080
+      Environment=$ENVIRONMENT_ID
+      Environment=$ORG_UID
+
+      [Install]
+      WantedBy=multi-user.target
+EOF
+    fi
+
     mv 1p-agent.service /etc/systemd/system
     systemctl enable 1p-agent
     curl -sLO https://1p-installers.s3.amazonaws.com/agent/bin/linux/latest/1p-agent
