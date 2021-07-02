@@ -10,14 +10,14 @@ if [ -z "$1" ]; then
     exit 1
 else
     ENVIRONMENT_ID=$1
-    ORG_UID=$2
+    AGENT_TOKEN=$2
 fi
 
 commonInstallation() {
     ### Create Systemd Agent
     echo "Installing Agent 1P"
 
-    if [ -z "$ORG_UID" ]; then
+    if [ -z "$AGENT_TOKEN" ]; then
       cat <<EOF >1p-agent.service
       [Unit]
       Description=1p-agent is a component of Elven Works One Platform.
@@ -53,7 +53,7 @@ EOF
       ExecStart=/usr/bin/1p-agent
       Environment=PORT=8080
       Environment=$ENVIRONMENT_ID
-      Environment=$ORG_UID
+      Environment=$AGENT_TOKEN
 
       [Install]
       WantedBy=multi-user.target
