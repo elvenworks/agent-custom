@@ -3,41 +3,10 @@ OS_NAME=$(cat /etc/os-release | awk -F '=' '/^NAME/{print $2}' | awk '{print $1}
 TIME=1
 clear
 
-echo "Check Variables"
-sleep $TIME
-if [ -z "$1" ]; then
-    echo "Please ENVIRONMENT_ID"
-    exit 1
-else
-    ENVIRONMENT_ID=$1
-    AGENT_TOKEN=$2
-fi
 
-commonInstallation() {
+InstallAgent(){
     ### Create Systemd Agent
-    echo "Installing Agent 1P"
-
-    if [ -z "$AGENT_TOKEN" ]; then
-      cat <<EOF >1p-agent.service
-      [Unit]
-      Description=1p-agent is a component of Elven Works One Platform.
-      After=network.target
-      StartLimitIntervalSec=500
-      StartLimitBurst=5
-
-      [Service]
-      Restart=on-failure
-      RestartSec=5s
-
-      User=$USER
-      ExecStart=/usr/bin/1p-agent
-      Environment=PORT=8080
-      Environment=$ENVIRONMENT_ID
-
-      [Install]
-      WantedBy=multi-user.target
-EOF
-    else
+    echo "Installing 1P Agent"
       cat <<EOF >1p-agent.service
       [Unit]
       Description=1p-agent is a component of Elven Works One Platform.
@@ -58,8 +27,6 @@ EOF
       [Install]
       WantedBy=multi-user.target
 EOF
-    fi
-
     mv 1p-agent.service /etc/systemd/system
     systemctl enable 1p-agent
     curl -sLO https://1p-installers.s3.amazonaws.com/agent/bin/linux/latest/1p-agent
@@ -68,18 +35,6 @@ EOF
 
     ### Set Eip Permission
     setcap cap_net_raw,cap_net_admin=eip /usr/bin/1p-agent
-
-    ### Start Agent 1P
-    echo "Start Agent 1P"
-    service 1p-agent start
-
-    ### check success to start the agent
-    if [ $? -eq 0 ]; then
-        echo "Agent 1P running"
-    else
-        echo "Error On Start Agent 1P"
-        exit 1
-    fi
 
     ### Set Logs
     echo "Setup Logz"
@@ -95,13 +50,107 @@ EOF
     curl -sI https://1p-installers.s3.amazonaws.com/agent/bin/linux/latest/1p-agent | grep x-amz-meta-version >${PWD}/agent-version-installed
     crontab "${PWD}/scripts/crontab-source"
 
+    ### Start Agent 1P
+    echo "Start 1P Agent"
+    service 1p-agent start
+
+    ### check success to start the agent
+    if [ $? -eq 0 ]; then
+        echo "Agent 1P running"
+    else
+        echo "Error On Start 1P Agent"
+        exit 1
+    fi
+
     ### End installation
     echo "Agent installed"
     sleep $TIME
     exit 0
-
 }
 
+
+UpdateAgentConfigs(){
+    echo "Updating 1P Agent"
+    service stop 1p-agent
+    if [ $? -eq 0 ]; then
+        echo "1P Agent Stopped"
+    else
+        echo "Error On Stopping 1P Agent"
+        exit 1
+    fi
+    ### Update Systemd Agent
+      cat <<EOF >1p-agent.service
+      [Unit]
+      Description=1p-agent is a component of Elven Works One Platform.
+      After=network.target
+      StartLimitIntervalSec=500
+      StartLimitBurst=5
+
+      [Service]
+      Restart=on-failure
+      RestartSec=5s
+
+      User=$USER
+      ExecStart=/usr/bin/1p-agent
+      Environment=PORT=8080
+      Environment=$ENVIRONMENT_ID
+      Environment=$AGENT_TOKEN
+
+      [Install]
+      WantedBy=multi-user.target
+EOF
+    ### move config
+    mv 1p-agent.service /etc/systemd/system
+    systemctl daemon-reload
+    if [ $? -eq 0 ]; then
+        echo "Reloading Complete"
+    else
+        echo "Reloading Error"
+        exit 1
+    fi
+    ### Start 1P Agent
+    echo "Start 1P Agent"
+    service 1p-agent start
+
+    ### Check success to start the agent
+    if [ $? -eq 0 ]; then
+        echo "1P Agent running"
+    else
+        echo "Error On Start 1P Agent"
+        exit 1
+    fi
+    ### End installation
+    echo "Agent Updated"
+    sleep $TIME
+    exit 0   
+}
+
+DeleteAgent(){
+    echo "Deleting 1P Agent"
+    ### stop 1p agent
+    service stop 1p-agent
+    ### delete config 1p agent
+    rm /etc/systemd/system/1p-agent.service
+    ### delete bin 1p agent
+    rm /usr/bin/1p-agent
+    echo "1P Agent Deleted"
+    exit 0
+}
+
+
+CheckSetEnvironments(){
+echo "Check Enviroments"
+sleep $TIME
+if  [ -z $1 ] || [ -z $2 ] ; then
+    echo "Please Set ENVIRONMENT_ID And AGENT_TOKEN"
+    exit 1
+else
+    ENVIRONMENT_ID=$1
+    AGENT_TOKEN=$2
+fi
+}
+
+ConfigOS(){
 case $OS_NAME in
 Amazon | CentOS)
     ### Create User 1p-agent
@@ -118,8 +167,6 @@ Amazon | CentOS)
     fi
     ### Set User
     USER=1p-agent
-    ### Call Common Function
-    commonInstallation
     ;;
 Ubuntu)
     ### Create User elvenworks
@@ -133,8 +180,34 @@ Ubuntu)
     fi
     ### Set User
     USER=elvenworks
-    ### Call Common Function
-    commonInstallation
+    ;;
+esac  
+}
+
+case $1 in
+--install)
+    ### Install 1P Agent
+    ConfigOS
+    CheckSetEnvironments $2 $3
+    InstallAgent
+    ;;
+--update)
+    ### Update Configs
+    CheckSetEnvironments $2 $3
+    UpdateAgentConfigs
+    ;;
+--delete)
+    ### Delete 1P Agent
+    DeleteAgent
+    ;;
+*)
+    echo "Please Set Your Option"
+    echo " "
+    echo "--install to install 1p-agent"
+    echo " "
+    echo "--update to update 1p-agent "
+    echo " "
+    echo "--delete to delete 1p-agent"
+    exit 1
     ;;
 esac
-# done
