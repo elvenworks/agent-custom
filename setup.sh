@@ -209,7 +209,7 @@ case $1 in
     echo " "
     echo "--update to update 1p-agent "
     echo " "
-    echo "--delete to delete 1p-agent"
+    echo "--uninstall to delete 1p-agent"
     exit 1
     ;;
 esac
