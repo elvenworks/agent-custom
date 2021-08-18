@@ -71,7 +71,7 @@ EOF
 
 UpdateAgentConfigs(){
     echo "Updating 1P Agent"
-    service stop 1p-agent
+    service 1p-agent stop
     if [ $? -eq 0 ]; then
         echo "1P Agent Stopped"
     else
