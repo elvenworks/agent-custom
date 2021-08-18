@@ -128,7 +128,7 @@ EOF
 DeleteAgent(){
     echo "Deleting 1P Agent"
     ### stop 1p agent
-    service stop 1p-agent
+    service 1p-agent stop
     ### delete config 1p agent
     rm /etc/systemd/system/1p-agent.service
     ### delete bin 1p agent
