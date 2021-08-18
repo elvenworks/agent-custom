@@ -125,7 +125,7 @@ EOF
     exit 0   
 }
 
-DeleteAgent(){
+UninstallAgent(){
     echo "Deleting 1P Agent"
     ### stop 1p agent
     service 1p-agent stop
@@ -198,9 +198,9 @@ case $1 in
     CheckSetEnvironments $2 $3
     UpdateAgentConfigs
     ;;
---delete)
+--uninstall)
     ### Delete 1P Agent
-    DeleteAgent
+    UninstallAgent
     ;;
 *)
     echo "Please Set Your Option"
