@@ -133,6 +133,8 @@ DeleteAgent(){
     rm /etc/systemd/system/1p-agent.service
     ### delete bin 1p agent
     rm /usr/bin/1p-agent
+    ### reload system
+    systemctl daemon-reload
     echo "1P Agent Deleted"
     exit 0
 }
