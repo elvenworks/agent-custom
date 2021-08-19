@@ -158,7 +158,7 @@ Amazon | CentOS)
     ### Create User 1p-agent
     echo "Create User"
     sleep $TIME
-    adduser 1p-agent
+    adduser 1p-agent --uid 1950
     ### Disable SeLinux
     setenforce 0
     sed -i 's/^SELINUX=.*/SELINUX=disabled/g' /etc/sysconfig/selinux
@@ -168,7 +168,7 @@ Amazon | CentOS)
         yum remove telnet -y
     fi
     ### Set User
-    USER=1p-agent
+    USER=1950
     ;;
 Ubuntu)
     ### Create User elvenworks
