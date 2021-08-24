@@ -135,6 +135,16 @@ UninstallAgent(){
     rm /usr/bin/1p-agent
     ### reload system
     systemctl daemon-reload
+    ### delete user
+    sleep $TIME
+    case $OS_NAME in
+    Amazon | CentOS)
+        userdel -r 1p-agent
+    ;;
+    Ubuntu)
+        userdel -r elvenworks
+    ;;
+    esac  
     echo "1P Agent Deleted"
     exit 0
 }
