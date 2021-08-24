@@ -142,7 +142,7 @@ UninstallAgent(){
         userdel -r 1p-agent
     ;;
     Ubuntu)
-        userdel -r elvenworks
+        deluser --remove-home elvenworks
     ;;
     esac  
     echo "1P Agent Deleted"
