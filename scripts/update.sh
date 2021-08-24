@@ -6,9 +6,9 @@ VERSION_CURRENT=`curl -sI https://1p-installers.s3.amazonaws.com/agent/bin/linux
 TIME=1
 
 if [ "$VERSION_INSTALLED" != "$VERSION_CURRENT" ]; then
-	echo "Start Update Agent 1P"
+	echo "Start Update 1P Agent"
 	if curl -sLO https://1p-installers.s3.amazonaws.com/agent/bin/linux/latest/1p-agent	; then
-		echo "Stop Agent 1P"
+		echo "Stop 1P Agent"
     	systemctl stop 1p-agent.service
 		sleep $TIME
 		chmod +x 1p-agent
@@ -17,11 +17,11 @@ if [ "$VERSION_INSTALLED" != "$VERSION_CURRENT" ]; then
 		echo "Set Version Installed"
 		echo $VERSION_CURRENT > /root/agent-custom/agent-version-installed
 		sleep $TIME
-		echo "Start Agent 1P"
+		echo "Start 1P Agent"
 		sleep $TIME
 		systemctl start 1p-agent.service
     else
-		echo "Error On Update Agent 1P"
+		echo "Error On Update 1P Agent"
 		exit 1
 	fi
 else

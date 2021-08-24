@@ -10,14 +10,14 @@ You will need the following things properly configured.
 
 Operational System
 
-- Amazon Linux 2 Or CentOS 7 
+- Amazon Linux 2 | CentOS 7 and 8 
 ## Installation
 
 - `sudo su -`
 - `yum install git -y` 
 - `git clone https://github.com/elvenworks/agent-custom.git` this repository
 - `cd agent-custom`
-- `bash setup.sh ENVIRONMENT_ID=my-env-id`
+- `bash setup.sh --install ENVIRONMENT_ID=my-env-id AGENT_TOKEN=my-token`
 
 
 
@@ -28,8 +28,11 @@ Operational System
 - `apt-get install git -y` 
 - `git clone https://github.com/elvenworks/agent-custom.git` this repository
 - `cd agent-custom`
-- `bash setup.sh ENVIRONMENT_ID=my-env-id`
+- `bash setup.sh --install ENVIRONMENT_ID=my-env-id AGENT_TOKEN=my-token`
 
 ## Check Setup
 
 - `systemctl status 1p-agent.service`
+
+## Update Configs
+- `bash setup.sh --update ENVIRONMENT_ID=my-env-id AGENT_TOKEN=my-token`
