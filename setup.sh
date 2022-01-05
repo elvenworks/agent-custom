@@ -36,15 +36,6 @@ EOF
     ### Set Eip Permission
     setcap cap_net_raw,cap_net_admin=eip /usr/bin/1p-agent
 
-    ### Set Logs
-    echo "Setup Logz"
-    curl -sLO https://github.com/logzio/logzio-shipper/raw/master/dist/logzio-rsyslog.tar.gz
-    tar xzf logzio-rsyslog.tar.gz
-    sed -i '95 s/./} -w 2/52' rsyslog/configure_linux.sh
-    source /tmp/logzio_env_token
-    yes | sudo rsyslog/install.sh -t linux -a $LOGZIO_TOKEN -l "listener.logz.io"
-    rm -vrf /tmp/logzio_env_token
-
     ### Set Version Agent And Script Update
     echo "Create Update Script"
     curl -sI https://1p-installers.s3.amazonaws.com/agent/bin/linux/latest/1p-agent | grep x-amz-meta-version >${PWD}/agent-version-installed
@@ -172,11 +163,6 @@ Amazon | CentOS)
     ### Disable SeLinux
     setenforce 0
     sed -i 's/^SELINUX=.*/SELINUX=disabled/g' /etc/sysconfig/selinux
-    ### Uninstall Telnet
-    echo "Check Telnet installed"
-    if ls /usr/bin/telnet; then
-        yum remove telnet -y
-    fi
     ### Set User
     USER=1950
     ;;
@@ -185,11 +171,6 @@ Ubuntu)
     echo "Create User"
     sleep $TIME
     adduser --gecos "" --disabled-password elvenworks
-    ### Uninstall Telnet
-    echo "Check Telnet installed"
-    if ls /usr/bin/telnet; then
-        apt-get remove telnet -y
-    fi
     ### Set User
     USER=elvenworks
     ;;
