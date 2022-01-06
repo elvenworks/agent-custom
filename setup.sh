@@ -140,6 +140,16 @@ UninstallAgent(){
     exit 0
 }
 
+UpdateLogsAgent(){
+    echo "Update 1P Agent"
+    ### remove config rsyslog user
+    sleep $TIME
+    rm -vrf /etc/rsyslog.d/22-logzio-linux.conf
+    systemctl restart rsyslog
+    echo "Done"
+    exit 0
+}
+
 
 CheckSetEnvironments(){
 echo "Check Enviroments"
@@ -192,6 +202,10 @@ case $1 in
 --uninstall)
     ### Delete 1P Agent
     UninstallAgent
+    ;;    
+--updatelogs) ## Is a TMP action
+    ### Update Logs Configs
+    UpdateLogsAgent
     ;;
 *)
     echo "Please Set Your Option"
