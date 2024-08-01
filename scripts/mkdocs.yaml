@@ -1,0 +1,10 @@
+site_name: "Agent custom"
+site_description: "Setup Agent Custom 1p"
+repo_url: https://github.com/elvenworks/agent-custom
+edit_uri: edit/main/docs
+
+plugins:
+  - techdocs-core
+
+nav:
+  - Introduction: README.md

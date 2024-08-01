@@ -1,0 +1,21 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: agent-custom
+  description: |
+    Setup Agent Custom 1p
+  links:
+    - title: Documentation
+      url: https://github.com/elvenworks/agent-custom/blob/main/README.md
+    - title: Teams Engineering
+      url: https://teams.microsoft.com/l/channel/19%3A3c4b525332d04220a4a88f267877248c%40thread.tacv2/engineering?groupId=cbdc334e-2bc9-4be1-9b38-ca7865c931a4&tenantId=7f7398ed-5b68-4625-995e-62e1fc3eadc0&ngc=true
+  annotations:
+    github.com/project-slug: elvenworks/agent-custom
+    backstage.io/techdocs-ref: dir:.
+    lighthouse.com/website-url: https://github.com/elvenworks/agent-custom
+    
+spec:
+  type: service
+  owner: elvenworks
+  lifecycle: production
+  
